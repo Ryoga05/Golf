@@ -59,6 +59,7 @@ public class Player : MonoBehaviour
                 flecha.SetActive(false);
                 quieta = false;
                 GameManager.instance.tocs++;
+                Debug.Log("Tocs: " + GameManager.instance.tocs);
             }
         }
 

@@ -25,7 +25,7 @@ public class Goal : MonoBehaviour
         {
             player = other.gameObject;
             Debug.Log("Has guanyat!!!");
-            Invoke("NextLevel", 3);
+            Invoke("NextLevel", 1);
         }
     }
     public void NextLevel()

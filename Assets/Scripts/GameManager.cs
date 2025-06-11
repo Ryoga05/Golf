@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -49,12 +50,71 @@ public class GameManager : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         GameObject sliderObject = GameObject.FindGameObjectWithTag("Slider");
-        slider = sliderObject.GetComponent<Slider>();
+        
+        if (sliderObject != null)
+        {
+            slider = sliderObject.GetComponent<Slider>();
+        }
+
+        if (scene.name == "EndScreen")
+        {
+            // Busca el objeto de texto y actualiza su valor
+            TextMeshProUGUI textoNombre = GameObject.Find("Nom")?.GetComponent<TextMeshProUGUI>();
+            if (textoNombre != null)
+            {
+                textoNombre.text = playerInputText;
+            }
+            TextMeshProUGUI textoTocs = GameObject.Find("Tocs")?.GetComponent<TextMeshProUGUI>();
+            if (textoTocs != null)
+            {
+                textoTocs.text = "Tocs: " + tocs.ToString();
+            }
+            GuardarNuevoRegistro(playerInputText, tocs);
+        }
     }
+
+    void GuardarNuevoRegistro(string nombre, int tocs)
+{
+    List<(string nombre, int tocs)> ranking = new List<(string, int)>();
+
+    // Cargar registros existentes
+    for (int i = 0; i < 5; i++)
+    {
+        string nomKey = "Rank" + i + "_Nombre";
+        string tocKey = "Rank" + i + "_Tocs";
+
+        if (PlayerPrefs.HasKey(nomKey) && PlayerPrefs.HasKey(tocKey))
+        {
+            ranking.Add((PlayerPrefs.GetString(nomKey), PlayerPrefs.GetInt(tocKey)));
+        }
+    }
+
+    // Agregar el nuevo registro
+    ranking.Add((nombre, tocs));
+
+    // Ordenar por menos tocs
+    ranking.Sort((a, b) => a.tocs.CompareTo(b.tocs));
+
+    // Mantener solo los 5 mejores
+    while (ranking.Count > 5)
+        ranking.RemoveAt(ranking.Count - 1);
+
+    // Guardar de nuevo
+    for (int i = 0; i < ranking.Count; i++)
+    {
+        PlayerPrefs.SetString("Rank" + i + "_Nombre", ranking[i].nombre);
+        PlayerPrefs.SetInt("Rank" + i + "_Tocs", ranking[i].tocs);
+    }
+
+    PlayerPrefs.Save();
+}
 
     // Update is called once per frame
     void Update()
     {
-        slider.value = player.GetComponent<Player>().fuerza;
+        if (slider != null)
+        {
+            slider.value = player.GetComponent<Player>().fuerza;
+        }
     }
 }
