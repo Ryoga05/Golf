@@ -107,6 +107,7 @@ MonoBehaviour:
   fuerzaIncremento: 5
   fuerzaMax: 5
   chargeMode: 1
+  tiempoCooldownPortal: 1
 --- !u!58 &4751995652274451289
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -15,6 +15,10 @@ public class Player : MonoBehaviour
     private bool quieta = true;
     private Vector3 posicionRaton;
     private bool clic = false;
+
+    [HideInInspector]
+    private float cooldownPortal = 0f;
+    public float tiempoCooldownPortal = 0.5f; // medio segundo
     // Start is called before the first frame update
     void Start()
     {
@@ -54,7 +58,7 @@ public class Player : MonoBehaviour
                 fuerza = 0f;
                 flecha.SetActive(false);
                 quieta = false;
-                GameManager.instance.tocs ++;
+                GameManager.instance.tocs++;
             }
         }
 
@@ -64,6 +68,9 @@ public class Player : MonoBehaviour
             quieta = true;  // Permite acumular y aplicar fuerza
             rb.freezeRotation = true;
         }
+
+        if (cooldownPortal > 0f)
+            cooldownPortal -= Time.deltaTime;
     }
 
     void PlayerDirection()
@@ -76,7 +83,8 @@ public class Player : MonoBehaviour
         //float direccionRotacion = deltaX < 0 ? 1 : -1;
 
         // Rota la flecha alrededor del jugador
-        if (deltaX != 0 && clic){
+        if (deltaX != 0 && clic)
+        {
             flecha.transform.RotateAround(transform.position, Vector3.forward, -deltaX * velocidadOrbita * Time.deltaTime);
         }
 
@@ -86,5 +94,15 @@ public class Player : MonoBehaviour
 
         // Actualiza la posición del ratón para el próximo frame
         posicionRaton = posicionRatonActual;
+    }
+    
+    public void ActivarCooldownPortal()
+    {
+        cooldownPortal = tiempoCooldownPortal;
+    }
+
+    public bool PuedeUsarPortal()
+    {
+        return cooldownPortal <= 0f;
     }
 }
